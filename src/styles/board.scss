@@ -1,0 +1,20 @@
+#root{
+    height: 100vh;
+    .board-game-wrapper{
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        align-content: center;
+        
+        .board-game{
+            padding: 20px;
+            display: grid;
+            // grid-template-columns: auto auto auto auto auto auto;
+            grid-gap: 5px;
+            border: solid red 4px;
+            height: 50vh;
+            width: 50vw;
+            
+        }
+    }
+}
