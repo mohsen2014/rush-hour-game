@@ -7,13 +7,10 @@
         align-content: center;
         
         .board-game{
-            padding: 20px;
-            display: grid;
-            // grid-template-columns: auto auto auto auto auto auto;
-            grid-gap: 5px;
-            border: solid red 4px;
-            height: 50vh;
-            width: 50vw;
+            // padding: 20px;
+            // border: solid red 4px;
+            height: 300px;
+            width: 300px;
             
         }
     }

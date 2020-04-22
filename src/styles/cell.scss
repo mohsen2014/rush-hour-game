@@ -1,6 +1,9 @@
 .board-game{
     .cell{
-        background-color: #efefef;
-        padding: 5px;
+        display: inline-flex;
+        height: 40px;
+        width: 40px;
+        background-color: #a9a9a9;
+        margin: 5px;
     }
 }
