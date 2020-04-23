@@ -1,11 +1,14 @@
 import React,{ useState,useEffect }from "react";
 import { Cell } from "./cell";
+import { BoardContext } from "./bordContext";
 import "./../styles/board.scss";
 
 
-export const Board = ({size=6,render}) => {
+export const Board = ({size=6,render,cars,setCars}) => {
     const renderAllCells = RenderAllCells({size});
     const [positions,setPositions] = useState(null);
+    const [selectedCar,setSelectedCar] = useState('')
+
     useEffect(()=>{
         if(positions) return;
         setTimeout(() => {
@@ -13,12 +16,14 @@ export const Board = ({size=6,render}) => {
         }, 1);
     },[positions, renderAllCells.coordinates]);
     return(
-        <div className="board-game-wrapper" >
-            <div className="board-game" style={{gridTemplateColumns: Array(size).fill('auto').join(' ')}}>
-                {renderAllCells.elements}
-                {render(positions)}    
+        <BoardContext.Provider value={{ selectedCar, setSelectedCar,cars,setCars}}>
+            <div className="board-game-wrapper" >
+                <div  className="board-game" style={{gridTemplateColumns: Array(size).fill('auto').join(' ')}}>
+                    {renderAllCells.elements}
+                    {render(positions)}    
+                </div>
             </div>
-        </div>
+        </BoardContext.Provider>
     )
 }
 
