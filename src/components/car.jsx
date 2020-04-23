@@ -3,37 +3,48 @@ import { BoardContext } from "./bordContext";
 import "./../styles/car.scss";
 
 export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
-    // console.log(cellCount, startAt,positions,color,isVertical)
+    const cellDim = 40;
+    // car position top and left
     const [positionTop,setPositionTop] = useState(0)
     const [positionLeft,setPositionLeft] = useState(0);
-    const ref = React.createRef();
+    const element = React.createRef();
     const { selectedCar, setSelectedCar,cars,setCars } = useContext(BoardContext)
-    useEffect(()=>{
-        if(positions){
-            setPositionTop(positions[startAt]?.top);
-            setPositionLeft(positions[startAt]?.left);
-        }
-    },[positions, startAt]);
-
+    // set height and widht for car
+    const getHeight = () =>isVertical ? cellDim * cellCount + (cellCount * 7) : cellDim;
+    const getWidth = () => isVertical ? cellDim : cellDim * cellCount + (cellCount * 7);
+    const arrows = {down: 'ArrowDown', up: 'ArrowUp', left: 'ArrowLeft', right: 'ArrowRight'};
+    const [...rowsLetters] = "ABCDEF"
     const handleClick = () => {
         setSelectedCar(startAt);
     }
-    const arrows = {down: 'ArrowDown', up: 'ArrowUp', left: 'ArrowLeft', right: 'ArrowRight'};
-    const [...rowsLetters] = "ABCDEF"
     const handleKey = (e) =>{
-        if(Object.values(arrows).indexOf(e.key) === -1) return;
         const key = e.key;
-        if(isVertical && (key === arrows.left || key === arrows.right)) return;
-        if(!isVertical && (key === arrows.up || key === arrows.down)) return;
-        const {itWillStartAt, nextCell} = calculateNextCell(isVertical,startAt,cellCount, key);debugger;
+        if(isArrowKey(arrows, e)) return;
+        const isUpAndDownKey = (key === arrows.left || key === arrows.right);
+        if(isVertical && isUpAndDownKey) return;
+        const isLeftAndRightKey = (key === arrows.up || key === arrows.down);
+        if(!isVertical && isLeftAndRightKey) return;
+        const {itWillStartAt, nextCell} = calculateNextCell(isVertical,startAt,cellCount, key);
         if(isValidMove(cars, nextCell)){
-            itWillStartAt && setCars(cars.map(car => {
-                if(car.startAt === startAt){
-                    car.startAt = itWillStartAt
-                }
-                return car
-            }));
+            if(isWinningMove(nextCell)){
+                console.log("You Win");
+            } 
+            // lets move
+            if(itWillStartAt){
+                setCars(cars.map(car => {
+                    if(car.startAt === startAt){
+                        car.startAt = itWillStartAt
+                    }
+                    return car
+                }));
+                setSelectedCar(itWillStartAt);
+                // console.log(element.current.click)
+                // element.current.click();
+            }
         }
+    }
+    const isWinningMove = (nextMove) =>{
+        return nextMove === "C6" && color === "red";
     }
     const isValidMove = (cars, nextCell) =>{
         const currentCar = startAt;
@@ -48,7 +59,6 @@ export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
         });
         return isValid
     }
-
     const calcReservedCells = ({startAt,cellCount, isVertical}) => {
         // let cells = [];
         const rowName = startAt.slice(0,1);
@@ -61,7 +71,6 @@ export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
             return Array(cellCount).fill().map((val,index)=>`${rowName}${+colNumner+index}`);
         }
     }
-
     const calculateNextCell = (isVertical,startAt,cellCount, key) =>{
         const rowName = startAt.slice(0,1);
         const colNumner = startAt.slice(1);
@@ -109,9 +118,6 @@ export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
             }
         }
     }
-
-    const getHeight = () =>isVertical ? 40 * cellCount + (cellCount * 7) : 40;
-    const getWidth = () => isVertical ? 40 : 40 * cellCount + (cellCount * 7);
     const style = {
         height: getHeight(),
         width: getWidth(),
@@ -119,8 +125,34 @@ export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
         left: positionLeft,
         backgroundColor: color 
     }
+// Set Position Fro Each Car
+    useEffect(()=>{
+        setTimeout(() => {
+            selectedCar === startAt && element.current && element.current.focus();
+        }, 1);
+    });
+    useEffect(()=>{
+        if(positions){
+            setPositionTop(positions[startAt]?.top);
+            setPositionLeft(positions[startAt]?.left);
+        }
+    },[positions, startAt]);
 
-    return positionTop && setPositionLeft && (<div tabIndex={index} onKeyDown={handleKey} ref={ref} onClick={handleClick} className={`car ${selectedCar === startAt ? 'selected' : ''}`} style={style} >
+    return positionTop 
+        && setPositionLeft 
+        && (<div 
+            tabIndex={index} 
+            onKeyDown={handleKey} 
+            onClick={handleClick} 
+            className={`car ${selectedCar === startAt ? 'selected' : ''}`} 
+            style={style}
+            ref={element}
+            >
+            
         </div>);
 
+}
+
+function isArrowKey(arrows, e) {
+    return Object.values(arrows).indexOf(e.key) === -1;
 }
