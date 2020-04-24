@@ -1,5 +1,5 @@
 import React,{useEffect,useState,useContext} from "react";
-import { BoardContext } from "./bordContext";
+import { BoardContext,TimerContext } from "./bordContext";
 import "./../styles/car.scss";
 
 export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
@@ -8,7 +8,8 @@ export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
     const [positionTop,setPositionTop] = useState(0)
     const [positionLeft,setPositionLeft] = useState(0);
     const element = React.createRef();
-    const { selectedCar, setSelectedCar,cars,setCars } = useContext(BoardContext)
+    const { selectedCar, setSelectedCar,cars,setCars,primaryCarsPositions } = useContext(BoardContext)
+    const { startTimer,stopTimer,restartTimer,setStartTimer,setStopTimer,setRestartTimer } = useContext(TimerContext)
     // set height and widht for car
     const getHeight = () =>isVertical ? cellDim * cellCount + (cellCount * 7) : cellDim;
     const getWidth = () => isVertical ? cellDim : cellDim * cellCount + (cellCount * 7);
@@ -23,23 +24,32 @@ export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
         const isUpAndDownKey = (key === arrows.left || key === arrows.right);
         if(isVertical && isUpAndDownKey) return;
         const isLeftAndRightKey = (key === arrows.up || key === arrows.down);
-        if(!isVertical && isLeftAndRightKey) return;
+        if(!isVertical &&    isLeftAndRightKey) return;
         const {itWillStartAt, nextCell} = calculateNextCell(isVertical,startAt,cellCount, key);
         if(isValidMove(cars, nextCell)){
             if(isWinningMove(nextCell)){
-                console.log("You Win");
+                // restart game
+                setCars([...primaryCarsPositions]);
+                // setStopTimer(true);
+                alert("You Win...");
+                setRestartTimer(true);
+
             } 
             // lets move
-            if(itWillStartAt){
+            else if(itWillStartAt){
+                // change cars state in the board
                 setCars(cars.map(car => {
                     if(car.startAt === startAt){
                         car.startAt = itWillStartAt
                     }
                     return car
                 }));
+                // StartTimer
+                if(!startTimer){
+                    setStartTimer(true)
+                }
+                // select last changed car
                 setSelectedCar(itWillStartAt);
-                // console.log(element.current.click)
-                // element.current.click();
             }
         }
     }
@@ -125,7 +135,7 @@ export const Car = ({cellCount, startAt,positions,color,isVertical,index}) => {
         left: positionLeft,
         backgroundColor: color 
     }
-// Set Position Fro Each Car
+// Set Position For Each Car
     useEffect(()=>{
         setTimeout(() => {
             selectedCar === startAt && element.current && element.current.focus();

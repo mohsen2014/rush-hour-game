@@ -5,13 +5,23 @@
         height: 100vh;
         justify-content: center;
         align-content: center;
-        
+        width: 50vw;
+        .exit{
+                height: 55px;
+                width: 40px;
+                top:115px;
+                left: 505px;
+                position: absolute;
+                display: flex;
+                background-color: #fff;
+                justify-content: center;
+                align-items: center;
+            }
         .board-game{
-            // padding: 20px;
-            // border: solid red 4px;
             height: 322px;
             width: 310px;
             outline: 15px groove #efefef;
+            
         }
     }
 }

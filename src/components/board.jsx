@@ -4,7 +4,7 @@ import { BoardContext } from "./bordContext";
 import "./../styles/board.scss";
 
 
-export const Board = ({size=6,render,cars,setCars}) => {
+export const Board = ({size=6,render,cars,setCars,primaryCarsPositions}) => {
     const renderAllCells = RenderAllCells({size});
     const [positions,setPositions] = useState(null);
     const [selectedCar,setSelectedCar] = useState('')
@@ -16,13 +16,15 @@ export const Board = ({size=6,render,cars,setCars}) => {
         }, 1);
     },[positions, renderAllCells.coordinates]);
     return(
-        <BoardContext.Provider value={{ selectedCar, setSelectedCar,cars,setCars}}>
+        <BoardContext.Provider value={{ selectedCar, setSelectedCar,cars,setCars,primaryCarsPositions}}>
             <div className="board-game-wrapper" >
                 <div  className="board-game" style={{gridTemplateColumns: Array(size).fill('auto').join(' ')}}>
                     {renderAllCells.elements}
                     {render(positions)}    
                 </div>
+                <div className="exit">Exit</div>
             </div>
+            
         </BoardContext.Provider>
     )
 }
@@ -36,7 +38,7 @@ const RenderAllCells = ({ size })=>{
             Object.keys(cells).forEach((name)=>{
                 coordinates[name] = {top: cells[name].current?.offsetTop, left: cells[name].current?.offsetLeft}
             });
-        },0);
+        },1);
     },[cells, coordinates])
     return {
         elements: signs.slice(0, size).map(sign => Array(size).fill().map((val, index) => {
