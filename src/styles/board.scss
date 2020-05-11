@@ -1,27 +1,24 @@
 #root{
-    height: 100vh;
     .board-game-wrapper{
         display: flex;
-        height: 100vh;
         justify-content: center;
         align-content: center;
         width: 50vw;
-        .exit{
-                height: 55px;
-                width: 40px;
-                top:135px;
-                left: 505px;
-                position: absolute;
-                display: flex;
-                background-color: #fff;
-                justify-content: center;
-                align-items: center;
-            }
         .board-game{
             height: 322px;
             width: 310px;
             outline: 15px groove #efefef;
-            
         }
     }
+    .exit{
+            height: 55px;
+            width: 40px;
+            top: -210px;
+            left: 490px;
+            position: relative;
+            display: flex;
+            background-color: #fff;
+            justify-content: center;
+            align-items: center;
+        }
 }

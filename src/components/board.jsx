@@ -22,9 +22,8 @@ export const Board = ({size=6,render,cars,setCars,primaryCarsPositions}) => {
                     {renderAllCells.elements}
                     {render(positions)}    
                 </div>
-                <div className="exit">Exit</div>
             </div>
-            
+            <div className="exit">Exit</div>
         </BoardContext.Provider>
     )
 }
